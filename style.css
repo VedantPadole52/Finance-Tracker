@@ -1,0 +1,48 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+.font-serif {
+    font-family: 'Playfair Display', serif;
+}
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #10b981;
+}
+
+/* Tax Slab Table for 6–8 LPA Salary (2026) */
+#tax-slab {
+    background-color: #121212;
+    color: #e0e0e0;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+}
+#tax-slab table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+#tax-slab th, #tax-slab td {
+    border: 1px solid #333;
+    padding: 8px;
+    text-align: center;
+}
+#tax-slab th {
+    background-color: #1f1f1f;
+    color: #f5f5f5;
+}
+/* Highlight categories */
+.exemption { color: #81c784; font-weight: bold; }
+.concessional { color: #ffb74d; font-weight: bold; }
+.slab-tax { color: #e57373; font-weight: bold; }

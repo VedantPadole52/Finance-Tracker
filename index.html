@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedant Finance Strategy</title>
+    <!-- Tailwind CSS for modern design tokens -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for beautiful split visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Supabase JS client — this is what gives us real cloud persistence -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-slate-100 min-h-full flex flex-col bg-slate-950">
+
+    <nav class="border-b border-slate-900 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-emerald-400 text-2xl">🌱</span>
+                    <span class="font-serif text-xl font-bold tracking-wide bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Vedant Finance Strategy</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6 text-xs text-slate-400">
+                    <span class="italic text-emerald-300">"Character is wealth. Focus on yourself."</span>
+                    <span class="h-4 w-[1px] bg-slate-800"></span>
+                    <span class="text-emerald-400 font-semibold" id="activeSipsCount">0 Active SIPs</span>
+                    <span class="h-4 w-[1px] bg-slate-800"></span>
+                    <span id="cloudStatus" class="text-slate-500 font-semibold">☁️ Connecting…</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-gradient-to-b from-slate-950 to-slate-900 pt-6 pb-6 border-b border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-slate-900/40 border border-emerald-500/10 rounded-2xl p-5 sm:p-6 backdrop-blur shadow-2xl relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl"></div>
+                <h2 class="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-3.5">The Zen Investor's Creed</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 hover:border-emerald-500/20 transition-all flex items-start gap-3">
+                        <span class="text-emerald-400 font-bold text-xs bg-emerald-500/10 px-2 py-0.5 rounded">1</span>
+                        <div><h4 class="font-semibold text-xs text-slate-200">Delay Gratification & Patience</h4><p class="text-[11px] text-slate-400 mt-0.5">True compounding requires decades, not days. Silence the noise of quick wealth.</p></div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 hover:border-emerald-500/20 transition-all flex items-start gap-3">
+                        <span class="text-emerald-400 font-bold text-xs bg-emerald-500/10 px-2 py-0.5 rounded">2</span>
+                        <div><h4 class="font-semibold text-xs text-slate-200">Emotion Control</h4><p class="text-[11px] text-slate-400 mt-0.5">Do not check portfolio balances during market panics. Keep breathing calmly.</p></div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 hover:border-emerald-500/20 transition-all flex items-start gap-3">
+                        <span class="text-emerald-400 font-bold text-xs bg-emerald-500/10 px-2 py-0.5 rounded">3</span>
+                        <div><h4 class="font-semibold text-xs text-slate-200">Invest It and Forget It</h4><p class="text-[11px] text-slate-400 mt-0.5">Automate your monthly targets. Out of sight, out of mind, safe to grow.</p></div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 hover:border-emerald-500/20 transition-all flex items-start gap-3">
+                        <span class="text-emerald-400 font-bold text-xs bg-emerald-500/10 px-2 py-0.5 rounded">4</span>
+                        <div><h4 class="font-semibold text-xs text-slate-200">Control Fear and Greed</h4><p class="text-[11px] text-slate-400 mt-0.5">Do the absolute opposite of what crowds do in the market. Buy the dips fearlessly.</p></div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 hover:border-emerald-500/20 transition-all flex items-start gap-3">
+                        <span class="text-emerald-400 font-bold text-xs bg-emerald-500/10 px-2 py-0.5 rounded">5</span>
+                        <div><h4 class="font-semibold text-xs text-slate-200">Increase Active Income First</h4><p class="text-[11px] text-slate-400 mt-0.5">Focus energy on your job/skills. Active income creates real wealth.</p></div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/60 hover:border-emerald-500/20 transition-all flex items-start gap-3">
+                        <span class="text-emerald-400 font-bold text-xs bg-emerald-500/10 px-2 py-0.5 rounded">6</span>
+                        <div><h4 class="font-semibold text-xs text-slate-200">No Philosophy Before Wealth</h4><p class="text-[11px] text-slate-400 mt-0.5">Become secure first. Real-life financial freedom allows philosophy to make practical sense.</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-9 space-y-6">
+            <section class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div><h2 class="text-base font-semibold text-slate-100">Simple Portfolio Configuration</h2><p class="text-xs text-slate-400 mt-0.5">Define your global budget, target evaluation date, and assets.</p></div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="openAddAssetModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all">➕ Add Asset</button>
+                        <button onclick="resetToCleanState()" class="px-3 py-1.5 bg-slate-950 border border-red-950 text-red-400 hover:bg-red-950/20 rounded-xl text-xs transition-all">Reset to Clean State</button>
+                    </div>
+                </div>
+                <div id="totals">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-wider">Monthly Saving Budget</label>
+                        <div class="mt-1.5 relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="text-slate-500 text-xs">₹</span></div>
+                            <input type="number" id="monthlySavings" placeholder="Enter savings budget..." step="1000" min="0" onchange="handleMonthlySavingsChange()" class="block w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-wider">SIP Target / Evaluation Date</label>
+                        <input type="date" id="targetEndDate" onchange="handleTargetDateChange()" class="mt-1.5 block w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all">
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <div class="flex justify-between items-center text-[11px] text-slate-400"><span>Allocation Budget Status:</span><span id="allocationStatus" class="font-bold">100% Assigned</span></div>
+                        <div class="w-full bg-slate-850 h-2 rounded-full mt-2 overflow-hidden"><div id="allocationBar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 100%"></div></div>
+                        <p id="allocationError" class="text-[10px] text-red-400 mt-1.5 hidden"></p>
+                    </div>
+                </div>
+            </section>
+            <br/><hr/>
+            <p style="color:red; font-weight:bold; text-align:center;">After hitting the emergency fund 60K then spread 15% equally between Flexi, Midcap, Small Cap</p>
+            <br/><hr/>
+            <section class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div class="flex justify-between items-center mb-4"><h3 class="text-sm font-semibold text-slate-100">Simple Monthly Saving & Investment Ledger</h3></div>
+                <div class="overflow-x-auto -mx-5 sm:mx-0">
+                    <table class="w-full text-left text-xs border-collapse border border-slate-800">
+                        <thead><tr class="bg-slate-950/80 text-slate-300 uppercase tracking-wider text-[10px]">
+                            <th class="p-3 font-semibold border border-slate-800">Asset Name</th><th class="p-3 font-semibold text-center w-24 border border-slate-800">Allocation (%)</th><th class="p-3 font-semibold text-center w-28 border border-slate-800">SIP Status</th><th class="p-3 font-semibold text-right w-32 border border-slate-800">Monthly SIP Amount</th><th class="p-3 font-semibold text-center w-36 border border-slate-800">SIP Start Date</th><th class="p-3 font-semibold text-right w-40 border border-slate-800 bg-emerald-950/20">Total Principal Invested</th><th class="p-3 font-semibold text-center w-20 border border-slate-800">Action</th>
+                        </tr></thead>
+                        <tbody id="portfolioTableBody" class="divide-y divide-slate-800"></tbody>
+                        <tfoot><tr class="bg-slate-950/90 font-bold text-slate-200">
+                            <td class="p-3 border border-slate-800">Grand Totals</td><td id="totalAllocation" class="p-3 text-center border border-slate-800 text-emerald-400">100%</td><td class="p-3 border border-slate-800"></td><td id="totalSip" class="p-3 text-right border border-slate-800 text-slate-300">₹0</td><td class="p-3 border border-slate-800"></td><td id="totalPrincipal" class="p-3 text-right border border-slate-800 text-emerald-400 bg-emerald-950/10">₹0</td><td class="p-3 border border-slate-800"></td>
+                        </tr></tfoot>
+                    </table>
+                </div>
+                <div id="customToast" class="mt-4 hidden p-3 rounded-xl text-xs border transition-all"></div>
+            </section>
+        </div>
+        <div class="lg:col-span-3 space-y-6">
+            <section class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h3 class="text-sm font-semibold text-slate-200 mb-1.5">Asset Allocation Split</h3><p class="text-[10px] text-slate-500 mb-4">Visual percentage representation of savings distribution.</p>
+                <div class="relative flex items-center justify-center h-48"><canvas id="holdingsSplitChart"></canvas></div>
+            </section>
+            <section class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h3 class="text-sm font-semibold text-slate-200 mb-2.5">Your Peace of Mind Checklists</h3>
+                <div class="space-y-2 text-xs">
+                    <label class="flex items-start gap-2.5 p-2 rounded-lg bg-slate-950 border border-slate-900 cursor-pointer hover:bg-slate-900/40"><input type="checkbox" id="checklist_0" onchange="saveChecklistState()" class="mt-0.5 rounded border-slate-800 text-emerald-500 focus:ring-0"><span class="text-slate-300 text-[11px]">I will not check prices during market panics.</span></label>
+                    <label class="flex items-start gap-2.5 p-2 rounded-lg bg-slate-950 border border-slate-900 cursor-pointer hover:bg-slate-900/40"><input type="checkbox" id="checklist_1" onchange="saveChecklistState()" class="mt-0.5 rounded border-slate-800 text-emerald-500 focus:ring-0"><span class="text-slate-300 text-[11px]">My emergency fund target (60k-1L) is safe.</span></label>
+                    <label class="flex items-start gap-2.5 p-2 rounded-lg bg-slate-950 border border-slate-900 cursor-pointer hover:bg-slate-900/40"><input type="checkbox" id="checklist_2" onchange="saveChecklistState()" class="mt-0.5 rounded border-slate-800 text-emerald-500 focus:ring-0"><span class="text-slate-300 text-[11px]">I prioritize active skills over investment news.</span></label>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="assetModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <h3 id="modalTitle" class="text-base font-bold text-slate-100 mb-4">Add Asset</h3>
+            <form id="assetForm" class="space-y-4" onsubmit="handleAssetFormSubmit(event)">
+                <input type="hidden" id="editAssetId">
+                <div><label class="block text-[10px] font-bold uppercase text-slate-400 tracking-wider">Asset / Fund Name</label><input type="text" id="modalAssetName" required placeholder="e.g. Parag Parikh Flexi Cap Fund" class="mt-1.5 block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-[10px] font-bold uppercase text-slate-400 tracking-wider">Allocation %</label><input type="number" id="modalAllocation" min="0" max="100" required placeholder="e.g. 30" class="mt-1.5 block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"></div>
+                    <div><label class="block text-[10px] font-bold uppercase text-slate-400 tracking-wider">SIP Start Date (Optional)</label><input type="date" id="modalStartDate" class="mt-1.5 block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"></div>
+                </div>
+                <div class="pt-4 flex justify-end gap-2 text-xs font-semibold">
+                    <button type="button" onclick="closeAssetModal()" class="px-4 py-2 bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200 rounded-lg transition-all">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 rounded-lg transition-all">Save Asset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <section id="tax-slab">
+        <h1 style="color:red; font-weight:bold; text-align:center; padding:20px;">Tax Slabs for 6–8 LPA Salary (2026)</h1>
+        <table>
+            <thead><tr><th>Asset Class</th><th>STCG</th><th>LTCG</th><th>Exemption</th></tr></thead>
+            <tbody>
+                <tr><td>Indian Equity</td><td class="concessional">20% (holding &lt; 1 year)</td><td class="concessional">12.5% (holding ≥ 1 year)</td><td class="exemption">₹1.25 lakh LTCG exemption (1.25 Lakh tax free per year</td></tr>
+                <tr><td>Foreign Equity Mutual Funds</td><td class="slab-tax">STCG as per slab (5% for 4–8 LPA, 10% for 8–12 LPA)</td><td class="slab-tax">12.5% (holding ≥ 2 years)</td><td class="slab-tax">No exemption</td></tr>
+                <tr><td>Gold and Silver</td><td class="slab-tax">STCG as per slab (5% for 4–8 LPA, 10% for 8–12 LPA)</td><td class="slab-tax">12.5% (holding ≥ 2 years)</td><td class="slab-tax">No exemption</td></tr>
+                <tr><td>Debt/ Liquid</td><td class="slab-tax">STCG as per slab (5% for 4–8 LPA, 10% for 8–12 LPA)</td><td class="slab-tax">LTCG as per slab (5% for 4–8 LPA, 10% for 8–12 LPA)</td><td class="slab-tax">No exemption</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer class="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-600 mt-12">
+        <div class="max-w-7xl mx-auto px-4 space-y-1">
+            <p>"Security is not the absence of danger, but the presence of absolute mental control."</p>
+            <p>&copy; Vedant Finance Strategy. Crafted for clutter-free independent compound growth.</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
